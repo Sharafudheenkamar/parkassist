@@ -34,6 +34,18 @@
         .card a:hover {
             text-decoration: underline;
         }
+        .logout-btn {
+            background: red;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .logout-btn:hover {
+            background: darkred;
+        }
     </style>
 </head>
 <body>
@@ -44,8 +56,11 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <form method="post" action="{% url 'LogoutView' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
             </div>
         </div>
     </nav>
@@ -53,33 +68,13 @@
     <!-- Dashboard Content -->
     <div class="container dashboard-container">
         <div class="row">
-            <!-- Add Parking Slot -->
-            <div class="col-md-4 mb-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Add Parking Slot</h5>
-                        <p class="card-text">Create a new parking slot in the system.</p>
-                        <a href="add_parking_slot.html" class="btn btn-success">Go to Add Slot</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Edit Parking Slot -->
-            <div class="col-md-4 mb-4">
-                <div class="card text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">Edit Parking Slot</h5>
-                        <p class="card-text">Modify existing parking slot details.</p>
-                        <a href="edit_parking_slot.html" class="btn btn-warning">Go to Edit Slot</a>
-                    </div>
-                </div>
-            </div>
             <!-- View Parking Slots -->
             <div class="col-md-4 mb-4">
                 <div class="card text-center">
                     <div class="card-body">
                         <h5 class="card-title">View Parking Slots</h5>
                         <p class="card-text">See all available and occupied parking slots.</p>
-                        <a href="view_parking_slots.html" class="btn btn-info">Go to View Slots</a>
+                        <a href="{% url 'Viewparkingslot' %}" class="btn btn-info">Go to View Slots</a>
                     </div>
                 </div>
             </div>
@@ -89,7 +84,7 @@
                     <div class="card-body">
                         <h5 class="card-title">View Customer Details</h5>
                         <p class="card-text">Access information about registered customers.</p>
-                        <a href="view_customer_details.html" class="btn btn-primary">Go to Customer Details</a>
+                        <a href="{% url 'Viewcustomers' %}" class="btn btn-primary">Go to Customer Details</a>
                     </div>
                 </div>
             </div>
@@ -99,7 +94,7 @@
                     <div class="card-body">
                         <h5 class="card-title">View Payments</h5>
                         <p class="card-text">Review all payment transactions.</p>
-                        <a href="view_payments.html" class="btn btn-secondary">Go to Payments</a>
+                        <a href="{% url 'Viewpayments' %}" class="btn btn-secondary">Go to Payments</a>
                     </div>
                 </div>
             </div>
