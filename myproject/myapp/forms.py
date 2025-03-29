@@ -20,4 +20,4 @@ class Parkassistform(ModelForm):
 class Slotform(ModelForm):
     class Meta:
         model= Slot
-        fields=['slotid','slotstatus','slotprice']
+        fields=['slotid','slotlocation','slotprice']

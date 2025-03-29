@@ -29,21 +29,26 @@
         <h2 class="text-center">Add Parking Slot</h2>
         <div class="row justify-content-center">
             <div class="col-md-6 form-box">
-                <form>
+                <form method="post">
+                    {% csrf_token %}
                     <div class="mb-3">
                         <label class="form-label">Slot Number</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text"name="slotid" class="form-control"  value="{{sl.slotid}}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Location</label>
-                        <input type="text" class="form-control" required>
+                        <input type="text" name="slotlocation" class="form-control" value="{{sl.slotlocation}}" required>
                     </div>
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label class="form-label">Status</label>
-                        <select class="form-control">
+                        <select class="form-control" name="">
                             <option value="available">Available</option>
                             <option value="occupied">Occupied</option>
                         </select>
+                    </div> -->
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="text"  name='slotprice' class="form-control"value="{{sl.slotprice}}"  required>
                     </div>
                     <button type="submit" class="btn btn-success w-100">Add Slot</button>
                 </form>

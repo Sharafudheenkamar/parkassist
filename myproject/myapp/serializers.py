@@ -4,10 +4,16 @@ from .models import *
 class LoginTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = LoginTable
-        fields = ['UserName', 'PassWord', 'type']
+        fields = ['Username', 'Password']
 
 class UserTableSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserTable
         fields = ['Name', 'Email', 'Phone']
+
+class SlotSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slot
+        fields = ['id','slotid', 'slotlocation', 'slotprice']
+
