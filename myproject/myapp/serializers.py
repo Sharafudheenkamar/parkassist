@@ -17,3 +17,7 @@ class SlotSerializer(serializers.ModelSerializer):
         model = Slot
         fields = ['id','slotid', 'slotlocation', 'slotprice']
 
+class Walletserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = '__all__'

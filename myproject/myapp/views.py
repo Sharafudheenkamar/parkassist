@@ -367,3 +367,48 @@ class BookSlotView(APIView):
         except Slot.DoesNotExist:
             return Response({"error": "Slot not found"}, status=status.HTTP_404_NOT_FOUND)
 
+class Viewwallet(APIView):
+    def get(self,request,id):
+        user=UserTable.objects.get(LOGINID__id=id).id
+        ser=Wallet.objects.filter(user__id=user).first()
+        ser=Walletserializer(ser)
+        return Response(ser.data)
+    def post(self, request, id):
+        """Create a new wallet entry for a user"""
+        user = get_object_or_404(UserTable, LOGINID__id=id)
+        data = request.data.copy()
+        data["user"] = user.id  # Assigning the user to the wallet
+
+        serializer = Walletserializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id):
+        """Update wallet details for a user"""
+        try:
+            print(request.data)
+            user = get_object_or_404(UserTable, LOGINID__id=id)
+            print(user)
+            wallet = Wallet.objects.filter(user=user).first()
+            print(wallet)
+            added_balance = float(request.data.get("amount", 0))
+
+            if added_balance < 0:
+                return Response({"message": "Balance must be a positive value"}, status=status.HTTP_400_BAD_REQUEST)
+
+            wallet.amount += added_balance  # Update balance
+            wallet.save()
+
+            
+            if not wallet:
+                return Response({"message": "Wallet not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            else:
+                return Response(status=status.HTTP_200_OK)
+            
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        

@@ -28,7 +28,7 @@ urlpatterns = [
     path('UserProfileView/<int:login_id>',UserProfileView.as_view(),name='UserProfileView'),
     path('AvailableSlotsView/<int:parkid>',AvailableSlotsView.as_view(),name='AvailableSlotsView'),
     path('AvailableTimeView/<int:slotid>/<str:date>/<str:duration>',AvailableTimeView.as_view(),name='AvailableTimeView'),
-    path('BookSlotView',BookSlotView.as_view(),name='BookSlotView')
-
+    path('BookSlotView',BookSlotView.as_view(),name='BookSlotView'),
+    path('Viewwallet/<int:id>',Viewwallet.as_view(),name='Viewwallet'),
 
 ]

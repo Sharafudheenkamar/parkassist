@@ -1,4 +1,7 @@
 from django.db import models
+from django.db import models, transaction
+from django.core.exceptions import ValidationError
+
 
 # Create your models here.
 
@@ -40,8 +43,8 @@ class Booking(models.Model):
 
 class Wallet(models.Model):
     user=models.ForeignKey(UserTable,on_delete=models.CASCADE,null=True,blank=True)
-    amount=models.IntegerField(null=True, blank=True)
-    balance=models.IntegerField(null=True, blank=True)  # Add this line
+    amount=models.FloatField(null=True, blank=True)
+      # Add this line
 
 class Transaction(models.Model):
     user=models.ForeignKey(UserTable,on_delete=models.CASCADE,null=True,blank=True)
@@ -51,16 +54,23 @@ class Transaction(models.Model):
     transactiontype=models.CharField(max_length=100, null=True, blank=True)
     transactiondate=models.DateTimeField(auto_now_add=True,null=True, blank=True)  # Add this line
     def save(self, *args, **kwargs):
-        if self.user and self.amount:
-            wallet = Wallet.objects.filter(user=self.user).first()
-            if wallet and wallet.balance is not None and wallet.balance >= self.amount:
-                wallet.balance -= self.amount  # Deduct transaction amount
-                wallet.save()
-                self.balance = wallet.balance  # Update transaction balance field
-            else:
-                raise ValueError("Insufficient balance in wallet.")
-        
-        super().save(*args, **kwargs)
+        if not self.user or self.amount is None:
+            raise ValidationError("User and amount are required for transactions.")
 
+        wallet = Wallet.objects.filter(user=self.user).first()
+        if not wallet:
+            raise ValidationError("Wallet does not exist for this user.")
+
+        with transaction.atomic():  # Ensures atomic update
+                if wallet.balance < self.amount:
+                    raise ValidationError("Insufficient balance in wallet.")
+                wallet.balance -= self.amount  # Deduct on debit
+
+# Add on credit
+
+                wallet.save()
+                self.balance = wallet.balance  # Store updated balance in transaction record
+
+        super().save(*args, **kwargs)
 
 
