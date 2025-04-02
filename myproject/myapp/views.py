@@ -158,7 +158,8 @@ class UserRegistration(APIView):
         if loginserializer.is_valid() and userserializer.is_valid():
             # Save the new user
             c=loginserializer.save(Type='user')
-            userserializer.save(LOGINID=c)
+            d=userserializer.save(LOGINID=c)
+            Wallet.objects.create(user=d,amount=10000)
             return Response(
                 {"message": "User registered successfully", "data": userserializer.data},
                 status=status.HTTP_201_CREATED,
@@ -167,6 +168,32 @@ class UserRegistration(APIView):
             {"message": "Error in registration", "errors": userserializer.errors},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from .models import UserTable
+from .serializers import UserTableSerializer
+
+class UserProfileView(APIView):
+    def get(self, request, login_id=None):
+        """Retrieve a user's profile."""
+        if login_id:
+            user = get_object_or_404(UserTable, LOGINID__id=login_id)
+            serializer = UserTableSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        users = UserTable.objects.all()
+        serializer = UserTableSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, login_id):
+        """Update a user's profile."""
+        user = get_object_or_404(UserTable, LOGINID__id=login_id)
+        serializer = UserTableSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class Loginapi(APIView):
     def post(self, request):
         print(request.data)

@@ -25,6 +25,7 @@ urlpatterns = [
     ######api view ################
     path('register', UserRegistration.as_view(), name='user_registration'),
     path('login',Loginapi.as_view(),name='Loginapi'),
+    path('UserProfileView/<int:login_id>',UserProfileView.as_view(),name='UserProfileView'),
     path('AvailableSlotsView/<int:parkid>',AvailableSlotsView.as_view(),name='AvailableSlotsView'),
     path('AvailableTimeView/<int:slotid>/<str:date>/<str:duration>',AvailableTimeView.as_view(),name='AvailableTimeView'),
     path('BookSlotView',BookSlotView.as_view(),name='BookSlotView')
