@@ -330,7 +330,7 @@ class BookSlotView(APIView):
         print(request.data)
         user_id = request.data.get("user")
         print(user_id)
-        user_id = UserTable.objects.get(LOGINID__id=user_id).id
+        user_id = UserTable.objects.get(LOGINID__id=user_id)
         slotid = request.data.get("slotid")
         date = request.data.get("bookingdate")
         start_time = request.data.get("bookingstarttime")
@@ -338,6 +338,7 @@ class BookSlotView(APIView):
         amount=request.data.get("amount")
         station=Slot.objects.get(id=slotid).parkid
         transactiontype=request.data.get("transactiontype")
+        print("ddddd",user_id,slotid,date,start_time,end_time,amount,station,transactiontype)
 
         try:
             slot = Slot.objects.get(id=slotid)
@@ -348,19 +349,22 @@ class BookSlotView(APIView):
                                                        bookingendtime__gt=start_time)
 
             if existing_bookings.exists():
+                print("hhhhhhhhhhhhh")
                 return Response({"error": "Selected time is already booked"}, status=status.HTTP_400_BAD_REQUEST)
 
             # Save booking
             booking = Booking.objects.create(
                 slotid=slot,
-                user_id=user_id,
+                user_id=user_id.id,
                 bookingdate=date,
                 bookingstarttime=start_time,
                 bookingendtime=end_time
             )
+            print(booking)
             booking.save()
-            tr=Transaction.objects.create(user=user_id,station=station,amount=amount,transactiontype=transactiontype)
+            tr=Transaction.objects.create(user=user_id,station=station,amount=amount,transactiontype='online')
             tr.save()
+            print("asdfghjkl")
 
             return Response({"message": "Booking successful"}, status=status.HTTP_201_CREATED)
 
@@ -411,4 +415,10 @@ class Viewwallet(APIView):
             
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
+class Viewnotifications(APIView):
+    def get(self,request,id):
+        print(request.data)
+        ser=Notificationmodel.objects.all().order_by('-notificationdate')
+        ser=Notificationserializer(ser,many=True)
+        return Response(ser.data)

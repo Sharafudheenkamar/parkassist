@@ -49,7 +49,7 @@ class Wallet(models.Model):
 class Transaction(models.Model):
     user=models.ForeignKey(UserTable,on_delete=models.CASCADE,null=True,blank=True)
     station=models.ForeignKey(Parkassist,on_delete=models.CASCADE,null=True,blank=True)
-    amount=models.IntegerField(null=True, blank=True)
+    amount=models.FloatField(null=True, blank=True)
     balance=models.IntegerField(null=True, blank=True)
     transactiontype=models.CharField(max_length=100, null=True, blank=True)
     transactiondate=models.DateTimeField(auto_now_add=True,null=True, blank=True)  # Add this line
@@ -62,15 +62,23 @@ class Transaction(models.Model):
             raise ValidationError("Wallet does not exist for this user.")
 
         with transaction.atomic():  # Ensures atomic update
-                if wallet.balance < self.amount:
-                    raise ValidationError("Insufficient balance in wallet.")
-                wallet.balance -= self.amount  # Deduct on debit
+            wallet_balance = float(wallet.amount)  # Convert wallet balance to float
+            transaction_amount = float(self.amount)  # Convert amount to float
 
+            if wallet_balance < transaction_amount:
+                raise ValidationError("Insufficient balance in wallet.")
+
+            wallet.amount-= transaction_amount  # Deduct on debit
+            wallet.save()  # Don't forget to save the wallet balance update
+
+        super().save(*args, **kwargs)  # Call the original save method
 # Add on credit
 
-                wallet.save()
-                self.balance = wallet.balance  # Store updated balance in transaction record
-
-        super().save(*args, **kwargs)
 
 
+class Notificationmodel(models.Model):
+    user=models.ForeignKey(UserTable,on_delete=models.CASCADE,null=True,blank=True)
+    notification=models.CharField(max_length=100,null=True,blank=True)
+    notificationdate=models.DateTimeField(auto_now_add=True,null=True,blank=True)
+
+    

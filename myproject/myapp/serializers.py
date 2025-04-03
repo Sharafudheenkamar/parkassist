@@ -21,3 +21,8 @@ class Walletserializer(serializers.ModelSerializer):
     class Meta:
         model = Wallet
         fields = '__all__'
+
+class Notificationserializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notificationmodel
+        fields = '__all__'
