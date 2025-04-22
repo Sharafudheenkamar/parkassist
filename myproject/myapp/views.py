@@ -422,3 +422,23 @@ class Viewnotifications(APIView):
         ser=Notificationmodel.objects.all().order_by('-notificationdate')
         ser=Notificationserializer(ser,many=True)
         return Response(ser.data)
+    
+class test(APIView):
+    def post(self,request):
+        print(request.data)
+        lstatus=Slot.objects.get(id=4)
+
+
+        # <QueryDict: {'lights on': ['']}>
+        # <QueryDict: {'lights off': ['']}>
+                # Determine the action from request data
+        if 'lights on' in request.data:
+            lstatus.slotlightstatus = "on"
+            lstatus.save()
+        elif 'lights off' in request.data:
+            lstatus.slotlightstatus = "off"
+            lstatus.save()
+
+        lstatus.save()
+        return Response({"message": f"Light status set to {lstatus.slotlightstatus}"})
+

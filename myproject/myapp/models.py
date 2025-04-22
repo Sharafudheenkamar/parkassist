@@ -30,6 +30,7 @@ class Parkassist(models.Model):
 class Slot(models.Model):
     parkid=models.ForeignKey(Parkassist,on_delete=models.CASCADE,null=True,blank=True)
     slotid=models.CharField(max_length=100, null=True, blank=True)
+    slotlightstatus=models.CharField(max_length=100,null=True,blank=True)
     slotstatus=models.CharField(max_length=100, null=True, blank=True)
     slotprice=models.IntegerField(null=True, blank=True)
     slotlocation=models.CharField(max_length=100,null=True,blank=True)

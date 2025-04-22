@@ -31,5 +31,6 @@ urlpatterns = [
     path('BookSlotView',BookSlotView.as_view(),name='BookSlotView'),
     path('Viewwallet/<int:id>',Viewwallet.as_view(),name='Viewwallet'),
     path('notifications/<int:id>',Viewnotifications.as_view(),name='Viewnotifications'),
+    path('test',test.as_view(),name='test'),
 
 ]
